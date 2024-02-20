@@ -1,4 +1,4 @@
-module github.com/fwhezfwhez/tcpx
+module github.com/CocoKelam/tcpx
 
 go 1.12
 
