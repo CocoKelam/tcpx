@@ -17,8 +17,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/fwhezfwhez/errorx"
 	"net"
+
+	"github.com/fwhezfwhez/errorx"
 )
 
 const (
@@ -193,9 +194,11 @@ func (tcpx *TcpX) WithBroadCastSignal(yes bool) *TcpX {
 //
 // * If you think built in heartbeat not good, abandon it:
 // ```
-// srv.AddHandler(1111, func(c *tcpx.Context){
-//    //do nothing by default and define your heartbeat yourself
-// })
+//
+//	srv.AddHandler(1111, func(c *tcpx.Context){
+//	   //do nothing by default and define your heartbeat yourself
+//	})
+//
 // ```
 func (tcpx *TcpX) HeartBeatMode(on bool, duration time.Duration) *TcpX {
 	tcpx.HeartBeatOn = on
@@ -234,8 +237,8 @@ func (tcpx *TcpX) HeartBeatModeDetail(on bool, duration time.Duration, throughMi
 
 // Rewrite heartbeat handler
 // It will inherit properties of the older heartbeat handler:
-//   * heartbeatInterval
-//   * throughMiddleware
+//   - heartbeatInterval
+//   - throughMiddleware
 func (tcpx *TcpX) RewriteHeartBeatHandler(messageID int32, f func(c *Context)) *TcpX {
 	tcpx.removeHandler(tcpx.HeartBeatMessageID)
 	tcpx.HeartBeatMessageID = messageID
@@ -295,11 +298,11 @@ func (tcpx *TcpX) Use(mids ...interface{}) {
 // UnUse an middleware.
 // a unused middleware will expired among handlers added after it.For example:
 //
-// 	srv := tcpx.NewTcpX(tcpx.JsonMarshaller{})
-//  srv.Use("middleware1", Middleware1, "middleware2", Middleware2)
-//	srv.AddHandler(1, SayHello)
-//	srv.UnUse("middleware2")
-//	srv.AddHandler(3, SayGoodBye)
+//		srv := tcpx.NewTcpX(tcpx.JsonMarshaller{})
+//	 srv.Use("middleware1", Middleware1, "middleware2", Middleware2)
+//		srv.AddHandler(1, SayHello)
+//		srv.UnUse("middleware2")
+//		srv.AddHandler(3, SayGoodBye)
 //
 // middleware1 and middleware2 will both work to handler 'SayHello'.
 // middleware1 will work to handler 'SayGoodBye' but middleware2 will not work to handler 'SayGoodBye'
@@ -528,7 +531,7 @@ func (tcpx *TcpX) ListenAndServeTCP(network, addr string) error {
 		conn.SetReadDeadline(tcpx.readDeadLine)
 		conn.SetWriteDeadline(tcpx.writeDeadLine)
 
-		ctx := NewContext(conn, tcpx.Packx.Marshaller)
+		ctx := NewContext(NewConnEx(conn), tcpx.Packx.Marshaller)
 
 		if tcpx.builtInPool {
 			ctx.poolRef = tcpx.pool

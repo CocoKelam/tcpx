@@ -3,6 +3,7 @@ package tcpx
 import (
 	"errors"
 	"fmt"
+
 	"github.com/fwhezfwhez/errorx"
 
 	"io"
@@ -108,25 +109,27 @@ func copyContext(ctx Context) *Context {
 // otherwise you should design your own client pool(github.com/fwhezfwhez/tcpx/clientPool/client-pool.go), and manage it
 // yourself, like:
 // ```
-//     var myPool = clientPool.NewClientPool()
-//     func main() {
-//         srv := tcpx.NewTcpX(nil)
-//         srv.AddHandler(1, func(c *tcpx.Context){
-//             type Login struct{
-//                Username string
-//             }
-//             var userLogin Login
-//             c.Bind(&userLogin)
-//             myPool.Online(userLogin.Username, c)
-//         })
-//         srv.AddHandler(2, func(c *tcpx.Context){
-//             username, ok := ctx.Username()
-//             if !ok {
-//                 fmt.Println("anonymous user no need to offline")
-//             }
-//             myPool.Offline(username)
-//         })
-//     }
+//
+//	var myPool = clientPool.NewClientPool()
+//	func main() {
+//	    srv := tcpx.NewTcpX(nil)
+//	    srv.AddHandler(1, func(c *tcpx.Context){
+//	        type Login struct{
+//	           Username string
+//	        }
+//	        var userLogin Login
+//	        c.Bind(&userLogin)
+//	        myPool.Online(userLogin.Username, c)
+//	    })
+//	    srv.AddHandler(2, func(c *tcpx.Context){
+//	        username, ok := ctx.Username()
+//	        if !ok {
+//	            fmt.Println("anonymous user no need to offline")
+//	        }
+//	        myPool.Offline(username)
+//	    })
+//	}
+//
 // ```
 func (ctx *Context) Online(username string) error {
 	if username == "" {
@@ -144,22 +147,24 @@ func (ctx *Context) Online(username string) error {
 // otherwise you should design your own client pool(github.com/fwhezfwhez/tcpx/clientPool/client-pool.go), and manage it
 // yourself, like:
 // ```
-//     var myPool = clientPool.NewClientPool()
-//     func main() {
-//         srv := tcpx.NewTcpX(nil)
-//         srv.AddHandler(1, func(c *tcpx.Context){
-//             type Login struct{
-//                Username string
-//             }
-//             var userLogin Login
-//             c.Bind(&userLogin)
-//             myPool.Online(userLogin.Username, c)
-//         })
-//         srv.AddHandler(2, func(c *tcpx.Context){
-//             myPool.Offline(userLogin.Username)
-//         })
-//     }
-//```
+//
+//	var myPool = clientPool.NewClientPool()
+//	func main() {
+//	    srv := tcpx.NewTcpX(nil)
+//	    srv.AddHandler(1, func(c *tcpx.Context){
+//	        type Login struct{
+//	           Username string
+//	        }
+//	        var userLogin Login
+//	        c.Bind(&userLogin)
+//	        myPool.Online(userLogin.Username, c)
+//	    })
+//	    srv.AddHandler(2, func(c *tcpx.Context){
+//	        myPool.Offline(userLogin.Username)
+//	    })
+//	}
+//
+// ```
 func (ctx *Context) Offline() error {
 	if ctx.poolRef == nil {
 		return errors.New("ctx.poolRef is nil, did you call 'tcpX.WithBuiltInPool(true)' or 'tcpX.SetPool(pool *tcpx.ClientPool)' yet")
@@ -375,10 +380,9 @@ func (ctx *Context) Username() (string, bool) {
 	return usernameI.(string), ok
 }
 
-
 // Context's connection scope saves an unique key to the connection pool
 // Before using this, ctx.SetUsername should be call first
-func (ctx *Context) GetUsername() (string) {
+func (ctx *Context) GetUsername() string {
 	usernameI, ok := ctx.GetCtxPerConn("tcpx-username")
 	if !ok {
 		return ""
@@ -421,7 +425,7 @@ func (ctx *Context) GetCtxPerRequest(k interface{}) (interface{}, bool) {
 func (ctx *Context) Reply(messageID int32, src interface{}, headers ...map[string]interface{}) error {
 	var buf []byte
 	var e error
-	buf, e = ctx.Packx.Pack(messageID, src, headers ...)
+	buf, e = ctx.Packx.Pack(messageID, src, headers...)
 	if e != nil {
 		return errorx.Wrap(e)
 	}
@@ -480,7 +484,7 @@ func (ctx *Context) commonReply(marshalName string, messageID int32, src interfa
 		}
 		return nil
 	}
-	buf, e = ctx.Packx.Pack(messageID, src, headers ...)
+	buf, e = ctx.Packx.Pack(messageID, src, headers...)
 	if e != nil {
 		return errorx.Wrap(e)
 	}
@@ -557,7 +561,7 @@ func (ctx *Context) Abort() {
 // offset can't be used straightly to control middlewares like  middlewares[offset]().
 // Thus, c.Next() means actually do nothing.
 func (ctx *Context) Next() {
-	ctx.offset ++
+	ctx.offset++
 	s := len(ctx.handlers)
 	for ; ctx.offset < s; ctx.offset++ {
 		if !ctx.isAbort() {
