@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/CocoKelam/tcpx/examples/sayHello/server/pb"
 	"github.com/fwhezfwhez/errorx"
-	"github.com/fwhezfwhez/tcpx/examples/sayHello/server/pb"
 
-	"github.com/fwhezfwhez/tcpx"
+	"github.com/CocoKelam/tcpx"
 	//"tcpx"
 )
 
@@ -24,7 +24,7 @@ func main() {
 	srv.OnClose = OnClose
 	srv.OnConnect = OnConnect
 
-	srv.HeartBeatMode(true, 5*time.Second)
+	srv.HeartBeatMode(true, 5*time.Second, true, 5*time.Second)
 	//srv.AddHandler(-1, func(c *tcpx.Context) {
 	//	fmt.Println("receive heartbeat:", c.Stream)
 	//	fmt.Println(c.RawStream())

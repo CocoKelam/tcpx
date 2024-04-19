@@ -2,8 +2,9 @@ package tcpx
 
 import (
 	"fmt"
+
+	"github.com/CocoKelam/tcpx/examples/sayHello/client/pb"
 	"github.com/fwhezfwhez/errorx"
-	"github.com/fwhezfwhez/tcpx/examples/sayHello/client/pb"
 
 	"net"
 	"testing"

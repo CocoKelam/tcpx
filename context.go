@@ -26,6 +26,16 @@ const ABORT = 2019
 type Context struct {
 	// for tcp conn
 	Conn net.Conn
+
+	// client latest heartbeat time
+	cliLatestActived *time.Time
+
+	// client heartbeat failed times
+	cliHeartbeatFailedTimes *int64
+
+	// server Latest send time
+	svrLatestSend *time.Time
+
 	// context scope lock
 	L *sync.RWMutex
 
@@ -84,10 +94,13 @@ func copyContext(ctx Context) *Context {
 	}
 
 	return &Context{
-		Conn:       ctx.Conn,
-		L:          ctx.L,
-		PacketConn: ctx.PacketConn,
-		Addr:       ctx.Addr,
+		Conn:                    ctx.Conn,
+		cliLatestActived:        ctx.cliLatestActived,
+		cliHeartbeatFailedTimes: ctx.cliHeartbeatFailedTimes,
+		svrLatestSend:           ctx.svrLatestSend,
+		L:                       ctx.L,
+		PacketConn:              ctx.PacketConn,
+		Addr:                    ctx.Addr,
 		//UDPSession:           ctx.UDPSession,
 		PerConnectionContext: ctx.PerConnectionContext,
 		PerRequestContext:    ctx.PerConnectionContext,
@@ -106,7 +119,7 @@ func copyContext(ctx Context) *Context {
 
 // No strategy to ensure username repeat or not , if username exists, it will replace the old connection context in the pool.
 // Only used when tcpX instance's builtInPool is true,
-// otherwise you should design your own client pool(github.com/fwhezfwhez/tcpx/clientPool/client-pool.go), and manage it
+// otherwise you should design your own client pool(github.com/CocoKelam/tcpx/clientPool/client-pool.go), and manage it
 // yourself, like:
 // ```
 //
@@ -144,7 +157,7 @@ func (ctx *Context) Online(username string) error {
 }
 
 // Only used when tcpX instance's builtInPool is true,
-// otherwise you should design your own client pool(github.com/fwhezfwhez/tcpx/clientPool/client-pool.go), and manage it
+// otherwise you should design your own client pool(github.com/CocoKelam/tcpx/clientPool/client-pool.go), and manage it
 // yourself, like:
 // ```
 //
@@ -181,8 +194,15 @@ func (ctx *Context) Offline() error {
 // This is used for new a context for tcp server.
 func NewContext(conn net.Conn, marshaller Marshaller) *Context {
 	var online = CONTEXT_ONLINE
+	var cliLatestActived = time.Now()
+	var cliHeartbeatFailedTimes int64 = 0
+	var svrLatestSend = time.Now()
 	return &Context{
-		Conn:                 conn,
+		Conn:                    conn,
+		cliLatestActived:        &cliLatestActived,
+		cliHeartbeatFailedTimes: &cliHeartbeatFailedTimes,
+		svrLatestSend:           &svrLatestSend,
+
 		PerConnectionContext: &sync.Map{},
 		PerRequestContext:    &sync.Map{},
 
@@ -521,6 +541,8 @@ func (ctx *Context) replyBuf(buf []byte) (e error) {
 		//		return errorx.Wrap(e)
 		//	}
 	}
+
+	ctx.UpdateLatestSendTime()
 	return nil
 }
 
@@ -641,7 +663,9 @@ func (ctx *Context) HeartBeatChan() chan int {
 
 // RecvHeartBeat
 func (ctx *Context) RecvHeartBeat() {
-	ctx.HeartBeatChan() <- 1
+	//ctx.HeartBeatChan() <- 1
+	//
+	ctx.UpdateCliActiveTime()
 }
 
 // Send to another conn index via username.
@@ -785,4 +809,41 @@ func (ctx *Context) GetURLPattern() (string, error) {
 
 	ctx.PerRequestContext.Store("url_pattern", urlPatternStr)
 	return urlPatternStr, nil
+}
+
+func (ctx *Context) IsCliOnline(timeout time.Duration) bool {
+	ctx.L.Lock()
+	defer ctx.L.Unlock()
+
+	if time.Since(*(ctx.cliLatestActived)) > timeout {
+		*(ctx.cliHeartbeatFailedTimes)++
+		if *(ctx.cliHeartbeatFailedTimes) >= 3 {
+			*(ctx.cliHeartbeatFailedTimes) = 0
+			return false
+		}
+	}
+
+	return true
+
+}
+
+func (ctx *Context) SvrNeedSendHeartbeat(timeout time.Duration) bool {
+	ctx.L.Lock()
+	defer ctx.L.Unlock()
+
+	return time.Since(*(ctx.svrLatestSend)) > timeout
+}
+
+func (ctx *Context) UpdateCliActiveTime() {
+	ctx.L.Lock()
+	defer ctx.L.Unlock()
+
+	*(ctx.cliLatestActived) = time.Now()
+}
+
+func (ctx *Context) UpdateLatestSendTime() {
+	ctx.L.Lock()
+	defer ctx.L.Unlock()
+
+	*(ctx.svrLatestSend) = time.Now()
 }

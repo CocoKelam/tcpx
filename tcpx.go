@@ -51,10 +51,14 @@ type TcpX struct {
 	maxByte int32
 
 	// heartbeat setting
-	HeartBeatOn        bool          // whether start a goroutine to spy on each connection
-	HeatBeatInterval   time.Duration // heartbeat should receive in the interval
-	HeartBeatMessageID int32         // which messageID to listen to heartbeat
-	ThroughMiddleware  bool          // whether heartbeat go through middleware
+	CheckCliHeartBeatOn bool          // whether start a goroutine to spy on each connection
+	CliHeatBeatTimeout  time.Duration // heartbeat should receive in the interval
+
+	HeatBeatToCliInterval time.Duration // server need send heartbeat to client
+	SendHeartbeatToCliOn  bool          // need send heartbeat to client?
+
+	HeartBeatMessageID int32 // which messageID to listen to heartbeat
+	ThroughMiddleware  bool  // whether heartbeat go through middleware
 
 	OnHeartbeatLoss func(c *Context) // when recv no heartbeat more than max configured times(default 3), will trigger this function
 
@@ -200,13 +204,16 @@ func (tcpx *TcpX) WithBroadCastSignal(yes bool) *TcpX {
 //	})
 //
 // ```
-func (tcpx *TcpX) HeartBeatMode(on bool, duration time.Duration) *TcpX {
-	tcpx.HeartBeatOn = on
-	tcpx.HeatBeatInterval = duration
+func (tcpx *TcpX) HeartBeatMode(chkCliHBOn bool, cliHBTimeout time.Duration, sendHBOn bool, sendHBInterval time.Duration) *TcpX {
+	tcpx.CheckCliHeartBeatOn = chkCliHBOn
+	tcpx.CliHeatBeatTimeout = cliHBTimeout
+	tcpx.SendHeartbeatToCliOn = sendHBOn
+	tcpx.HeatBeatToCliInterval = sendHBInterval
+
 	tcpx.ThroughMiddleware = false
 	tcpx.HeartBeatMessageID = DEFAULT_HEARTBEAT_MESSAGEID
 
-	if on {
+	if chkCliHBOn {
 		tcpx.AddHandler(DEFAULT_HEARTBEAT_MESSAGEID, func(c *Context) {
 			Logger.Println(fmt.Sprintf("recv '%s' heartbeat:", c.ClientIP()), c.Stream)
 			c.RecvHeartBeat()
@@ -220,13 +227,16 @@ func (tcpx *TcpX) SetEventOnHeartbeatLoss(f func(c *Context)) {
 }
 
 // specific args for heartbeat
-func (tcpx *TcpX) HeartBeatModeDetail(on bool, duration time.Duration, throughMiddleware bool, messageID int32) *TcpX {
-	tcpx.HeartBeatOn = on
-	tcpx.HeatBeatInterval = duration
+func (tcpx *TcpX) HeartBeatModeDetail(chkCliHBOn bool, cliHBTimeout time.Duration, sendHBOn bool, sendHBInterval time.Duration, throughMiddleware bool, messageID int32) *TcpX {
+	tcpx.CheckCliHeartBeatOn = chkCliHBOn
+	tcpx.CliHeatBeatTimeout = cliHBTimeout
+	tcpx.SendHeartbeatToCliOn = sendHBOn
+	tcpx.HeatBeatToCliInterval = sendHBInterval
+
 	tcpx.ThroughMiddleware = throughMiddleware
 	tcpx.HeartBeatMessageID = messageID
 
-	if on {
+	if chkCliHBOn {
 		tcpx.AddHandler(messageID, func(c *Context) {
 			Logger.Println(fmt.Sprintf("recv '%s' heartbeat:", c.ClientIP()), c.Stream)
 			c.RecvHeartBeat()
@@ -444,7 +454,7 @@ func (tcpx *TcpX) ListenAndServeRaw(network, addr string) error {
 		}
 		conn, err := listener.Accept()
 		if err != nil {
-			log.Println(fmt.Sprintf(err.Error()))
+			log.Println(err.Error())
 			break
 		}
 
@@ -522,7 +532,7 @@ func (tcpx *TcpX) ListenAndServeTCP(network, addr string) error {
 		}
 		conn, err := listener.Accept()
 		if err != nil {
-			log.Println(fmt.Sprintf(err.Error()))
+			log.Println(err.Error())
 			break
 		}
 
@@ -545,8 +555,8 @@ func (tcpx *TcpX) ListenAndServeTCP(network, addr string) error {
 			go broadcastSignalWatch(ctx, tcpx)
 		}
 
-		if tcpx.HeartBeatOn {
-			go heartBeatWatch(ctx, tcpx)
+		if tcpx.CheckCliHeartBeatOn {
+			go checkHeartBeat(ctx, tcpx)
 		}
 		if tcpx.auth {
 			go authWatch(ctx, tcpx)
@@ -569,11 +579,14 @@ func (tcpx *TcpX) ListenAndServeTCP(network, addr string) error {
 				ctx.Stream, e = ctx.Packx.FirstBlockOfLimitMaxByte(ctx.Conn, tcpx.maxByte)
 				if e != nil {
 					if e == io.EOF {
+						Logger.Println(fmt.Sprintf("client '%s' has closed", ctx.ClientIP()))
 						break
 					}
 					Logger.Println(e)
 					break
 				}
+				ctx.UpdateCliActiveTime()
+
 				tmpContext := copyContext(*ctx)
 
 				isPipe, restN, e := isPipe(tmpContext.Stream)
@@ -1028,7 +1041,7 @@ func handleRaw(ctx *Context, tcpx *TcpX) {
 // - ctx.recvEnd: when connection's context calls 'ctx.CloseConn()', recvEnd will be closed and stop this watching goroutine.
 // - time out receiving interval heartbeat pack.
 func heartBeatWatch(ctx *Context, tcpx *TcpX) {
-	if tcpx.HeartBeatOn == true {
+	if tcpx.CheckCliHeartBeatOn {
 		go func() {
 			defer func() {
 				// fmt.Println("心跳结束)
@@ -1048,7 +1061,7 @@ func heartBeatWatch(ctx *Context, tcpx *TcpX) {
 				case <-ctx.HeartBeatChan():
 					times = 0
 					continue L
-				case <-time.After(tcpx.HeatBeatInterval):
+				case <-time.After(tcpx.CliHeatBeatTimeout):
 					times++
 					if times == 3 {
 						// heartbeat loss handler
@@ -1065,6 +1078,59 @@ func heartBeatWatch(ctx *Context, tcpx *TcpX) {
 					ctx.CloseConn()
 					return
 				case <-ctx.recvEnd:
+					return
+				}
+			}
+		}()
+	}
+}
+
+func checkHeartBeat(ctx *Context, tcpx *TcpX) {
+	if tcpx.CheckCliHeartBeatOn {
+		go func() {
+			defer func() {
+				if e := recover(); e != nil {
+					Logger.Println("recover from : %v", e)
+				}
+			}()
+
+			ticker := time.NewTicker(time.Second)
+			defer ticker.Stop()
+
+			// if need send client a heartbeat
+			if tcpx.SendHeartbeatToCliOn {
+				if err := ctx.JSON(DEFAULT_HEARTBEAT_MESSAGEID, nil, nil); err != nil {
+					Logger.Println("send heartbeat to dev [%v] failed", ctx.offset)
+				}
+			}
+
+			for {
+				if tcpx.State() == STATE_STOP {
+					ctx.CloseConn()
+					break
+				}
+
+				select {
+				case <-ticker.C:
+					if ctx.IsCliOnline(tcpx.CliHeatBeatTimeout) {
+						if tcpx.SendHeartbeatToCliOn {
+							if ctx.SvrNeedSendHeartbeat(tcpx.HeatBeatToCliInterval - time.Second - time.Millisecond*500) {
+								// send heartbeat
+								if err := ctx.JSON(DEFAULT_HEARTBEAT_MESSAGEID, nil, nil); err != nil {
+									Logger.Println("send heartbeat to dev [%v] failed", ctx.offset)
+								}
+							}
+						}
+					} else {
+						ctx.CloseConn()
+						return
+					}
+				case <-tcpx.closeAllSignal:
+
+					ctx.CloseConn()
+					return
+				case <-ctx.recvEnd:
+
 					return
 				}
 			}

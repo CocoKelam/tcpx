@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/fwhezfwhez/tcpx"
+	"github.com/CocoKelam/tcpx"
 )
 
 func main() {

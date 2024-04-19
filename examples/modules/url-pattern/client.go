@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/fwhezfwhez/errorx"
 	"net"
+
+	"github.com/fwhezfwhez/errorx"
+
 	//"tcpx"
-	"github.com/fwhezfwhez/tcpx"
+	"github.com/CocoKelam/tcpx"
 )
 
 func main() {

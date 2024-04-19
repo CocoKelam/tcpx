@@ -4,21 +4,24 @@ package main
 import (
 	"encoding/json"
 	"encoding/xml"
-	"github.com/fwhezfwhez/tcpx"
-	"github.com/fwhezfwhez/tcpx/all-language-clients/model"
-	"github.com/rs/cors"
 	"io/ioutil"
 	"net/http"
 	"time"
+
+	"github.com/CocoKelam/tcpx"
+	"github.com/CocoKelam/tcpx/all-language-clients/model"
+	"github.com/rs/cors"
 )
+
 type H map[string]interface{}
-type C struct{
+type C struct {
 	w http.ResponseWriter
 	r *http.Request
 }
+
 func (c *C) Bind(dest interface{}) error {
-	buf, e:= ioutil.ReadAll(c.r.Body)
-	if e!=nil {
+	buf, e := ioutil.ReadAll(c.r.Body)
+	if e != nil {
 		return e
 	}
 	return json.Unmarshal(buf, dest)
@@ -26,15 +29,15 @@ func (c *C) Bind(dest interface{}) error {
 
 func (c *C) JSON(statusCode int, data interface{}) {
 	c.w.WriteHeader(statusCode)
-	buf,_ := json.Marshal(data)
+	buf, _ := json.Marshal(data)
 	c.w.Write(buf)
 }
 func main() {
-	mux:= http.NewServeMux()
+	mux := http.NewServeMux()
 	mux.HandleFunc("/tcpx/clients/stream/", func(w http.ResponseWriter, r *http.Request) {
 		var c = C{
-			w:w,
-			r:r,
+			w: w,
+			r: r,
 		}
 
 		type Param struct {
@@ -84,9 +87,6 @@ func main() {
 		}
 		c.JSON(200, H{"message": "success", "result": "ok", "ms": message})
 	})
-
-
-
 
 	s := &http.Server{
 		Addr:           ":7001",

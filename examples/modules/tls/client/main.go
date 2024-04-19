@@ -3,7 +3,8 @@ package main
 import (
 	"crypto/tls"
 	"crypto/x509"
-	"github.com/fwhezfwhez/tcpx"
+
+	"github.com/CocoKelam/tcpx"
 )
 
 func main() {

@@ -3,10 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/fwhezfwhez/tcpx"
 	"net"
 	"os"
 	"runtime/debug"
+
+	"github.com/CocoKelam/tcpx"
 )
 
 func main() {
@@ -46,7 +47,7 @@ func Recv(conn net.Conn) {
 			handleError(e)
 			return
 		}
-		body,e := tcpx.BodyBytesOf(buf)
+		body, e := tcpx.BodyBytesOf(buf)
 		if e != nil {
 			handleError(e)
 			return
@@ -54,7 +55,7 @@ func Recv(conn net.Conn) {
 		switch messageID {
 		case 500, 400, 403:
 			var m map[string]interface{}
-		    e := json.Unmarshal(body, &m)
+			e := json.Unmarshal(body, &m)
 			if e != nil {
 				handleError(e)
 				return
@@ -76,7 +77,7 @@ func Recv(conn net.Conn) {
 }
 
 func handleError(e error) {
-	if e!=nil {
+	if e != nil {
 		fmt.Printf("%v \n %s", e, debug.Stack())
 		os.Exit(1)
 	}

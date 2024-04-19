@@ -16,7 +16,7 @@ env:
 
 sudo: true
 
-go_import_path: github.com/fwhezfwhez/tcpx
+go_import_path: github.com/CocoKelam/tcpx
 
 before_install:
   # - go get -t -v ./...

@@ -3,7 +3,9 @@ package tcpx
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/fwhezfwhez/errorx"
+
 	// "github.com/xtaci/kcp-go"
 	"net"
 	"runtime"
@@ -406,7 +408,7 @@ func TestHeartbeat(t *testing.T) {
 
 		srv := NewTcpX(nil)
 
-		srv.HeartBeatModeDetail(true, 5*time.Second, false, DEFAULT_HEARTBEAT_MESSAGEID)
+		srv.HeartBeatModeDetail(true, 5*time.Second, true, 5*time.Second, false, DEFAULT_HEARTBEAT_MESSAGEID)
 
 		//srv.RewriteHeartBeatHandler(1300, func(c *tcpx.Context) {
 		//	fmt.Println("rewrite heartbeat handler")
@@ -590,7 +592,6 @@ func TestTcpX_TCP_AnchorMiddleware(t *testing.T) {
 			testResult <- nil
 		})
 		srv.UnUse("anchor1")
-
 
 		srv.Use("anchor1", func(c *Context) {
 			fmt.Println(2)

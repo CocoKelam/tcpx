@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/fwhezfwhez/tcpx"
 	"net"
+
+	"github.com/CocoKelam/tcpx"
+
 	//"tcpx"
 	"time"
 )
@@ -21,7 +23,9 @@ func main() {
 	onlineBuf, e := tcpx.PackWithMarshaller(tcpx.Message{
 		MessageID: 1,
 		Header:    nil,
-		Body:      struct{ Username string `json:"username"` }{"ft"},
+		Body: struct {
+			Username string `json:"username"`
+		}{"ft"},
 	}, tcpx.JsonMarshaller{})
 
 	offlineBuf := tcpx.PackStuff(3)

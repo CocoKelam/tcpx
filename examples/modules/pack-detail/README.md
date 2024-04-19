@@ -186,7 +186,7 @@ golang for example:
 #### Golang tcpx provides official api to decode and encode.
 
 **encode**:
-`import "github.com/fwhezfwhez/tcpx"`
+`import "github.com/CocoKelam/tcpx"`
 ```go
     buf,_ :=tcpx.PackWithMarshaller(Message{
 		MessageID: 1,
@@ -201,7 +201,7 @@ golang for example:
 ```
 
 **decode**:
-`import "github.com/fwhezfwhez/tcpx"`
+`import "github.com/CocoKelam/tcpx"`
 ```go
 	messageID,_ := tcpx.MessageIDOf(buf)
     header,_ := tcpx.HeaderOf(buf)

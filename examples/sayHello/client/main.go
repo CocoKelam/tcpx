@@ -4,13 +4,15 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/fwhezfwhez/errorx"
-	"github.com/fwhezfwhez/tcpx"
 	"net"
+
+	"github.com/CocoKelam/tcpx"
+	"github.com/fwhezfwhez/errorx"
 	//"tcpx"
 )
 
 var packx = tcpx.NewPackx(tcpx.JsonMarshaller{})
+
 // var packxProto = tcpx.NewPackx(tcpx.ProtobufMarshaller{})
 
 func main() {
@@ -83,7 +85,7 @@ func main() {
 
 	fmt.Println(buf)
 
-	for i:=0;i<1000;i++ {
+	for i := 0; i < 1000; i++ {
 		conn.Write(buf)
 	}
 

@@ -1,9 +1,9 @@
 <p align="center">
-    <a href="github.com/fwhezfwhez/tcpx"><img src="https://user-images.githubusercontent.com/36189053/65203408-cc228800-dabd-11e9-929d-4c9c82b8cdc0.png" width="450"></a>
+    <a href="github.com/CocoKelam/tcpx"><img src="https://user-images.githubusercontent.com/36189053/65203408-cc228800-dabd-11e9-929d-4c9c82b8cdc0.png" width="450"></a>
 </p>
 
 <p align="center">
-    <a href="https://godoc.org/github.com/fwhezfwhez/tcpx"><img src="http://img.shields.io/badge/godoc-reference-blue.svg?style=flat"></a>
+    <a href="https://godoc.org/github.com/CocoKelam/tcpx"><img src="http://img.shields.io/badge/godoc-reference-blue.svg?style=flat"></a>
     <a href="https://www.travis-ci.org/fwhezfwhez/tcpx"><img src="https://www.travis-ci.org/fwhezfwhez/tcpx.svg?branch=master"></a>
     <a href="https://gitter.im/fwhezfwhez-tcpx/community"><img src="https://badges.gitter.im/Join%20Chat.svg"></a>
     <a href="https://codecov.io/gh/fwhezfwhez/tcpx"><img src="https://codecov.io/gh/fwhezfwhez/tcpx/branch/master/graph/badge.svg"></a>
@@ -65,7 +65,7 @@ Golang对tcp的支持十分友好，不过在包的拆组上，官方没有提�
 所以， tcpx提供安全完整的包协议，提供仿http-gin的写法，保持统一，并且，强制使用人按照类似http样式的路由来分发。基于这样的方式来开发，可以让项目变得和http一样简单。
 
 ## 1. 开始
-`go get github.com/fwhezfwhez/tcpx`
+`go get github.com/CocoKelam/tcpx`
 
 #### 必要依赖
 部分本仓库的代码，在运行时，需要安装protoc,protogen-gen,你可以通过下面的链接找到对应的下载方式。
@@ -81,20 +81,20 @@ protoc --version
 
 #### 压测
 
-https://github.com/fwhezfwhez/tcpx/blob/master/benchmark_test.go
+https://github.com/CocoKelam/tcpx/blob/master/benchmark_test.go
 
 | cases | exec times | cost time per loop | cost mem per loop | cost alloc mem times per loop | url |
 |-----------| ---- |------|-------------|-----|-----|
-| OnMessage | 2000000 | 643 ns/op | 1368 B/op | 5 allocs/op| [click to location](https://github.com/fwhezfwhez/tcpx/blob/9c70f4bd5a0042932728ed44681ff70d6a22f7e3/benchmark_test.go#L9) |
-| Mux without middleware | 2000000 | 761 ns/op | 1368 B/op | 5 allocs/op| [click to location](https://github.com/fwhezfwhez/tcpx/blob/9c70f4bd5a0042932728ed44681ff70d6a22f7e3/benchmark_test.go#L17) |
-| Mux with middleware | 2000000 | 768 ns/op | 1368 B/op | 5 allocs/op| [click to location](https://github.com/fwhezfwhez/tcpx/blob/9c70f4bd5a0042932728ed44681ff70d6a22f7e3/benchmark_test.go#L25) |
+| OnMessage | 2000000 | 643 ns/op | 1368 B/op | 5 allocs/op| [click to location](https://github.com/CocoKelam/tcpx/blob/9c70f4bd5a0042932728ed44681ff70d6a22f7e3/benchmark_test.go#L9) |
+| Mux without middleware | 2000000 | 761 ns/op | 1368 B/op | 5 allocs/op| [click to location](https://github.com/CocoKelam/tcpx/blob/9c70f4bd5a0042932728ed44681ff70d6a22f7e3/benchmark_test.go#L17) |
+| Mux with middleware | 2000000 | 768 ns/op | 1368 B/op | 5 allocs/op| [click to location](https://github.com/CocoKelam/tcpx/blob/9c70f4bd5a0042932728ed44681ff70d6a22f7e3/benchmark_test.go#L25) |
 
 - cost time per loop: 每次执行的耗时，越小越好
 - cost mem per loop: 每次执行的内存占用，越小越好
 - cost alloc mem times per loop: 每次执行时申请内存的次数,越小越好
 
 ## 2. 示例
-https://github.com/fwhezfwhez/tcpx/tree/master/examples/sayHello
+https://github.com/CocoKelam/tcpx/tree/master/examples/sayHello
 
 #### helloworld
 server:
@@ -104,7 +104,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/fwhezfwhez/tcpx"
+	"github.com/CocoKelam/tcpx"
 )
 
 func main() {
@@ -127,7 +127,7 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/fwhezfwhez/tcpx"
+	"github.com/CocoKelam/tcpx"
 	//"tcpx"
 )
 
@@ -157,7 +157,7 @@ func main() {
 ```
 
 #### 2.1 心跳
-https://github.com/fwhezfwhez/tcpx/tree/master/examples/modules/heartbeat
+https://github.com/CocoKelam/tcpx/tree/master/examples/modules/heartbeat
 
 - tcpx自带心跳机制，可以通过下面的实例代码开启。在心跳开启时，客户端必须在指定间隔时间内，不断地发送心跳，确保不被服务当作僵尸杀死。
 - 心跳机制依赖的是tcpx的mux路由机制。而路由机制是不允许使用Onmessage的，所以使用自带的心跳机制时，需要注意。
@@ -195,10 +195,10 @@ https://github.com/fwhezfwhez/tcpx/tree/master/examples/modules/heartbeat
 
 - 在线离线需要使用tcpx自带的用户池。
 
-https://github.com/fwhezfwhez/tcpx/tree/master/examples/modules/online-offline
+https://github.com/CocoKelam/tcpx/tree/master/examples/modules/online-offline
 
 #### 2.3 优雅退出，重启
-https://github.com/fwhezfwhez/tcpx/tree/master/examples/modules/graceful
+https://github.com/CocoKelam/tcpx/tree/master/examples/modules/graceful
 
 - 优雅退出
 
@@ -217,29 +217,29 @@ https://github.com/fwhezfwhez/tcpx/tree/master/examples/modules/graceful
 包含 `graceful stop` and `graceful start` 两个操作
 
 #### 2.4 中间件
-https://github.com/fwhezfwhez/tcpx/tree/master/examples/modules/middleware
+https://github.com/CocoKelam/tcpx/tree/master/examples/modules/middleware
 
 这里的例子可以告诉你，如何使用tcpx的中间件
 
 #### 2.5 包协议详情
-https://github.com/fwhezfwhez/tcpx/tree/master/examples/modules/pack-detail
+https://github.com/CocoKelam/tcpx/tree/master/examples/modules/pack-detail
 
 tcpx自带包协议，这里的例子将会描述拆包装包的详情
 
 #### 2.6 聊天
-https://github.com/fwhezfwhez/tcpx/tree/master/examples/modules/chat
+https://github.com/CocoKelam/tcpx/tree/master/examples/modules/chat
 
 这里是使用tcpx，实现了一个简单的聊天
 
 #### 2.7 无包协议通讯
-https://github.com/fwhezfwhez/tcpx/tree/master/examples/modules/raw
+https://github.com/CocoKelam/tcpx/tree/master/examples/modules/raw
 
 如果你不喜欢tcpx自带的包协议，可以利用Raw方式来处理请求。以这种方式接入请求，只有全局中间件(r.UseGlobal)和锚中间件(r.Use)会生效。你会发现，使用srv.OnMessage其实等价于Raw+tcp包协议。
 
 使用该通讯方式时，需要自主读流，拆包解析。
 
 #### 2.8 用户池
-https://github.com/fwhezfwhez/tcpx/tree/master/examples/modules/online-offline
+https://github.com/CocoKelam/tcpx/tree/master/examples/modules/online-offline
 
 例子和2.2共享，使用offline和online时，需要使用tcpx自带的(很基本功能)的用户连接池。
 
@@ -251,7 +251,7 @@ https://github.com/fwhezfwhez/tcpx/tree/master/examples/modules/online-offline
 - 一个用户两个渠道同时上线。当然，如果你使用ctx.Online(username:channel)，也可以做到多渠道同时上线
 
 #### 2.9 鉴权
-https://github.com/fwhezfwhez/tcpx/tree/master/examples/modules/auth
+https://github.com/CocoKelam/tcpx/tree/master/examples/modules/auth
 
 鉴权帮助服务端主动隔绝非法连接建立。类似redis, 当连接建立后，必须在指定时间内发送鉴权消息，否则将无法使用服务的任何路由，并且将被杀死。
 
@@ -604,7 +604,7 @@ func SayHello(c *tcpx.Context) {
 ```
 
 ## 4. 使用频率比较高的方法
-你可以在这里获得所有api: https://godoc.org/github.com/fwhezfwhez/tcpx
+你可以在这里获得所有api: https://godoc.org/github.com/CocoKelam/tcpx
 
 这里，将对核心api进行单独讲解。
 
@@ -659,10 +659,10 @@ var message tcpx.Message
 
 ## 5. 协议转换网关
 gateway repo:
-https://github.com/fwhezfwhez/tcpx/tree/master/gateway/pack-transfer
+https://github.com/CocoKelam/tcpx/tree/master/gateway/pack-transfer
 
 example:
-https://github.com/fwhezfwhez/tcpx/tree/master/examples/use-gateway
+https://github.com/CocoKelam/tcpx/tree/master/examples/use-gateway
 
 `go run main.go -port 7000`  run the gateway locally in port 7000 or else.
 

@@ -4,9 +4,11 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
+
 	"github.com/golang/protobuf/proto"
+
 	//"tcpx/examples/modules/pack-detail/protobuf/pb"
-	"github.com/fwhezfwhez/tcpx/examples/modules/pack-detail/protobuf/pb"
+	"github.com/CocoKelam/tcpx/examples/modules/pack-detail/protobuf/pb"
 )
 
 func main() {

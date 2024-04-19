@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+
+	"github.com/CocoKelam/tcpx"
+	"github.com/CocoKelam/tcpx/examples/modules/my-marshal/marshaller"
 	"github.com/fwhezfwhez/errorx"
-	"github.com/fwhezfwhez/tcpx"
-	"github.com/fwhezfwhez/tcpx/examples/modules/my-marshal/marshaller"
 )
 
 var packx = tcpx.NewPackx(marshaller.ByteMarshaller{})

@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/fwhezfwhez/tcpx"
 	"fmt"
+
+	"github.com/CocoKelam/tcpx"
 	//"tcpx"
 )
 

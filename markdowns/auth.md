@@ -1,5 +1,5 @@
 ## Auth
-https://github.com/fwhezfwhez/tcpx/tree/master/examples/modules/auth
+https://github.com/CocoKelam/tcpx/tree/master/examples/modules/auth
 
 Auth makes different sense comparing with middleware. A middleware can easily stop a invalid request after a connection has been established, but It can't avoid a client keep sending heartbeat but do nothing.It still occupy a connection resource.
 

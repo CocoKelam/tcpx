@@ -3,10 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/fwhezfwhez/tcpx"
 	"net"
 	"os"
 	"runtime/debug"
+
+	"github.com/CocoKelam/tcpx"
 )
 
 func main() {

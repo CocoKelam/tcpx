@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/fwhezfwhez/tcpx"
 	"sync/atomic"
+
+	"github.com/CocoKelam/tcpx"
 	//"tcpx"
 )
 

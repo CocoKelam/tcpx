@@ -5,7 +5,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/fwhezfwhez/tcpx"
+	"github.com/CocoKelam/tcpx"
 )
 
 func main() {
@@ -28,7 +28,7 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/fwhezfwhez/tcpx"
+	"github.com/CocoKelam/tcpx"
 	//"tcpx"
 )
 

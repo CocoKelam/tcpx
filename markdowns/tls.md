@@ -8,7 +8,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/fwhezfwhez/tcpx"
+	"github.com/CocoKelam/tcpx"
 )
 
 func main() {
@@ -38,4 +38,4 @@ func main() {
 ```
 
 Example:
-[tls example](https://github.com/fwhezfwhez/tcpx/tree/master/examples/modules/tls)
+[tls example](https://github.com/CocoKelam/tcpx/tree/master/examples/modules/tls)

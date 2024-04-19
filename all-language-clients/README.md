@@ -4,7 +4,7 @@ all-language-clients provide realizations of building tcpx's expected binary str
 #### golang
 golang pack has been realized, it can be referred.
 
-https://github.com/fwhezfwhez/tcpx/blob/master/packx.go
+https://github.com/CocoKelam/tcpx/blob/master/packx.go
 ```go
 type Packx interface{
     Pack(messageID int32, src interface{}, header map[string]interface{}) ([]byte,error)
@@ -30,7 +30,7 @@ func main() {
 ```
 
 #### python
-https://github.com/fwhezfwhez/tcpx/blob/master/all-language-clients/python/protocol.py
+https://github.com/CocoKelam/tcpx/blob/master/all-language-clients/python/protocol.py
 ```python
     # payload
     payload = 'hello'

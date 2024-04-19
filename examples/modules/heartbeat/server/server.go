@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/fwhezfwhez/tcpx"
+	"github.com/CocoKelam/tcpx"
 	//"tcpx"
 	"time"
 )
@@ -9,7 +9,11 @@ import (
 func main() {
 	srv := tcpx.NewTcpX(nil)
 
-	srv.HeartBeatModeDetail(true, 10*time.Second, false, tcpx.DEFAULT_HEARTBEAT_MESSAGEID)
+	// send client heartbeat
+	//srv.HeartBeatModeDetail(true, 5*time.Second, true, 5*time.Second, false, tcpx.DEFAULT_HEARTBEAT_MESSAGEID)
+
+	// donot send client heartbeat
+	srv.HeartBeatModeDetail(true, 5*time.Second, true, 5*time.Second, false, tcpx.DEFAULT_HEARTBEAT_MESSAGEID)
 
 	//srv.RewriteHeartBeatHandler(1300, func(c *tcpx.Context) {
 	//	fmt.Println("rewrite heartbeat handler")

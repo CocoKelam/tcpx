@@ -1,6 +1,6 @@
 #### Heartbeat
 
-https://github.com/fwhezfwhez/tcpx/tree/master/examples/modules/heartbeat
+https://github.com/CocoKelam/tcpx/tree/master/examples/modules/heartbeat
 
 tcpx has built-in heartbeat handler. Default heartbeat messageID is 1392.It means client should send heartbeat pack in specific interval.When fail received more than 3 times, connection will break by server.
 

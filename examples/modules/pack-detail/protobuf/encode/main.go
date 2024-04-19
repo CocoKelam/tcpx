@@ -4,7 +4,8 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
-	"github.com/fwhezfwhez/tcpx/examples/modules/pack-detail/protobuf/pb"
+
+	"github.com/CocoKelam/tcpx/examples/modules/pack-detail/protobuf/pb"
 	"github.com/golang/protobuf/proto"
 )
 
