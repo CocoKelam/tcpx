@@ -3,7 +3,7 @@ package main
 import (
 	"crypto/md5"
 	"fmt"
-	"github.com/fwhezfwhez/tcpx"
+	"github.com/CocoKelam/tcpx"
 	"net"
 	"os"
 	"strings"

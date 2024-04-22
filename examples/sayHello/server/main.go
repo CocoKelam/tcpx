@@ -24,13 +24,13 @@ func main() {
 	srv.OnClose = OnClose
 	srv.OnConnect = OnConnect
 
-	srv.HeartBeatMode(true, 5*time.Second, true, 5*time.Second)
+	srv.ClientHBMode(true, 5*time.Second)
 	//srv.AddHandler(-1, func(c *tcpx.Context) {
 	//	fmt.Println("receive heartbeat:", c.Stream)
 	//	fmt.Println(c.RawStream())
 	//	c.RecvHeartBeat()
 	//})
-	srv.RewriteHeartBeatHandler(20, func(c *tcpx.Context) {
+	srv.RewriteClientHBHandler(20, func(c *tcpx.Context) {
 		fmt.Println("rewrite heartbeat and receive from client")
 	})
 	srv.Use("middleware1", Middleware1, "middleware2", Middleware2)

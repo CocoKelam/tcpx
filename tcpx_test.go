@@ -408,7 +408,7 @@ func TestHeartbeat(t *testing.T) {
 
 		srv := NewTcpX(nil)
 
-		srv.HeartBeatModeDetail(true, 5*time.Second, true, 5*time.Second, false, DEFAULT_HEARTBEAT_MESSAGEID)
+		srv.ClientHBModeDetail(true, 5*time.Second, false, DEFAULT_HEARTBEAT_MESSAGEID)
 
 		//srv.RewriteHeartBeatHandler(1300, func(c *tcpx.Context) {
 		//	fmt.Println("rewrite heartbeat handler")

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/fwhezfwhez/tcpx"
+	"github.com/CocoKelam/tcpx"
 	"net"
 )
 

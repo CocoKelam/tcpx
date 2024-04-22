@@ -811,7 +811,8 @@ func (ctx *Context) GetURLPattern() (string, error) {
 	return urlPatternStr, nil
 }
 
-func (ctx *Context) IsCliOnline(timeout time.Duration) bool {
+// check client HB -- check client is online ?
+func (ctx *Context) checkClientHB(timeout time.Duration) bool {
 	ctx.L.Lock()
 	defer ctx.L.Unlock()
 
@@ -827,7 +828,7 @@ func (ctx *Context) IsCliOnline(timeout time.Duration) bool {
 
 }
 
-func (ctx *Context) SvrNeedSendHeartbeat(timeout time.Duration) bool {
+func (ctx *Context) SvrNeedSendHB(timeout time.Duration) bool {
 	ctx.L.Lock()
 	defer ctx.L.Unlock()
 

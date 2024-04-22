@@ -13,7 +13,7 @@ func main() {
 	//srv.HeartBeatModeDetail(true, 5*time.Second, true, 5*time.Second, false, tcpx.DEFAULT_HEARTBEAT_MESSAGEID)
 
 	// donot send client heartbeat
-	srv.HeartBeatModeDetail(true, 5*time.Second, true, 5*time.Second, false, tcpx.DEFAULT_HEARTBEAT_MESSAGEID)
+	srv.ClientHBModeDetail(true, 5*time.Second, true, tcpx.DEFAULT_HEARTBEAT_MESSAGEID)
 
 	//srv.RewriteHeartBeatHandler(1300, func(c *tcpx.Context) {
 	//	fmt.Println("rewrite heartbeat handler")

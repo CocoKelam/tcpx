@@ -5,7 +5,7 @@ import (
 	"runtime/debug"
 	"time"
 
-	"github.com/fwhezfwhez/tcpx"
+	"github.com/CocoKelam/tcpx"
 	"log"
 	//"tcpx"
 )
